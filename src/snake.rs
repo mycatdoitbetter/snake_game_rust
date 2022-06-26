@@ -8,6 +8,10 @@ use opengl_graphics::{GlGraphics};
 use piston::{Key, Button };
 use piston::input::{RenderArgs, UpdateArgs};
 
+
+use apple::Apple;
+
+
 pub enum Directions {
     Up,
     Down,
@@ -28,15 +32,16 @@ impl Snake {
       let (width, height) = (args.window_size[0], args.window_size[1]);
         
       if 
-      self.x + self.size  >= width as f64 ||
-      self.x  < 0.0 || 
+      self.x + self.size >= width as f64 ||
+      self.x < 0.0 || 
       self.y + self.size >= height as f64 ||
-      self.y  < 0.0 {
+      self.y < 0.0 {
           return true;
       }
 
       return false;
   }
+  
   fn change_direction(&mut self){
       match self.direction {
           Directions::Right => self.x += self.velocity,
@@ -45,6 +50,18 @@ impl Snake {
           Directions::Down => self.y += self.velocity,
       }
   }
+  
+ fn collide_with_apple(&mut self, apple: &Apple) -> bool {
+   
+    let distance = (self.x - apple.x).powi(2) + (self.y - apple.y).powi(2);
+
+    if distance < (self.size + apple.size).powi(2) / 2.0 {
+        return true;
+    }
+
+      return false;
+  }
+
   pub fn render (&mut self, render_args: &RenderArgs) -> bool {
       let square_snake = graphics::rectangle::square(self.x, self.y, self.size as f64);
       self.gl.draw(render_args.viewport(), |c, gl| {
@@ -63,8 +80,13 @@ impl Snake {
       }
   }
   
-  pub fn update(&mut self, _update_args: &UpdateArgs) {
+  pub fn update(&mut self, _update_args: &UpdateArgs,  apple: &mut Apple) {
    self.change_direction();
+   if self.collide_with_apple(apple) {
+       println!("collided with apple");
+       self.velocity += 0.3;
+       apple.generate_new_apple()
+   }
   }
 
   pub fn pressed(&mut self, button: Button) {

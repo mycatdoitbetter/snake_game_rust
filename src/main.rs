@@ -6,11 +6,13 @@ extern crate nanorand;
 
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::{GlGraphics, OpenGL};
-use piston::{ Button, ButtonEvent, ButtonState};
+use piston::{ Button, ButtonEvent, ButtonState, EventLoop };
 use piston::event_loop::{EventSettings, Events};
 use piston::input::{RenderArgs, RenderEvent, UpdateArgs, UpdateEvent};
 use piston::window::WindowSettings;
 
+pub mod apple;
+use apple::Apple;
 
 pub mod snake;
 use snake::Snake;
@@ -18,7 +20,8 @@ use snake::Directions;
 
 struct Game {
     gl: GlGraphics, 
-    snake: Snake,  
+    snake: Snake,
+    apple: Apple,  
 }
 
 impl Game {
@@ -30,13 +33,14 @@ impl Game {
             );
         });
 
+        self.apple.render(render_args);
         let still_alive = !self.snake.render(render_args);
         
         return still_alive;
     }
 
     fn update(&mut self, update_args: &UpdateArgs) {
-        self.snake.update(update_args);
+        self.snake.update(update_args, &mut self.apple);
     }
 
     fn pressed(&mut self, button: Button) {
@@ -66,6 +70,12 @@ fn main() {
             velocity: 1.5,
             direction: Directions::Right
         },
+        apple: Apple {
+            gl: GlGraphics::new(opengl),
+            x: 200.0,
+            y: 130.0,
+            size: 20.0,
+        }
     };
 
     let mut events = Events::new(EventSettings::new());
