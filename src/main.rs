@@ -6,7 +6,7 @@ extern crate nanorand;
 
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::{GlGraphics, OpenGL};
-use piston::{Key, Button, ButtonEvent, ButtonState};
+use piston::{ Button, ButtonEvent, ButtonState};
 use piston::event_loop::{EventSettings, Events};
 use piston::input::{RenderArgs, RenderEvent, UpdateArgs, UpdateEvent};
 use piston::window::WindowSettings;
@@ -60,6 +60,7 @@ fn main() {
         gl: GlGraphics::new(opengl),
         snake: Snake {
             gl: GlGraphics::new(opengl),
+            size: 20.0,
             x: (window_width / 2) as f64,
             y: (window_height / 2) as f64,
             velocity: 1.5,

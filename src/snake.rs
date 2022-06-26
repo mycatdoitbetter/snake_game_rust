@@ -18,6 +18,7 @@ pub struct Snake {
   pub gl: GlGraphics,
   pub x: f64,
   pub y: f64,
+  pub size: f64,
   pub velocity: f64,
   pub direction: Directions,
 }
@@ -25,8 +26,12 @@ pub struct Snake {
 impl Snake {
   fn verify_collision_with_wall(&mut self, args: &RenderArgs ) -> bool {
       let (width, height) = (args.window_size[0], args.window_size[1]);
-
-      if self.x >= width as f64 || self.x < 0.0 || self.y >= height as f64 || self.y < 0.0 {
+        
+      if 
+      self.x + self.size  >= width as f64 ||
+      self.x  < 0.0 || 
+      self.y + self.size >= height as f64 ||
+      self.y  < 0.0 {
           return true;
       }
 
@@ -41,7 +46,7 @@ impl Snake {
       }
   }
   pub fn render (&mut self, render_args: &RenderArgs) -> bool {
-      let square_snake = graphics::rectangle::square(self.x, self.y, 20.0);
+      let square_snake = graphics::rectangle::square(self.x, self.y, self.size as f64);
       self.gl.draw(render_args.viewport(), |c, gl| {
           let transform = c.transform;
 
