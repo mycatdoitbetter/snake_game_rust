@@ -18,8 +18,6 @@ pub enum Directions {
     Right,
 }
 
-
-
 pub struct Snake {
     pub gl: GlGraphics,
     pub x: f64,
@@ -29,11 +27,13 @@ pub struct Snake {
     pub direction: Directions,
     pub sounds: Audio,
     pub score: u64,
+    pub snake_body: Vec<(f64, f64)>,
 }
 
 impl Snake {
     pub fn new(opengl: OpenGL, sounds: Audio, initial_x: f64, initial_y: f64) -> Snake {
-        
+        let snake_body = vec![(initial_x - 20.0, initial_y), (initial_x - 40.0, initial_y),  (initial_x - 60.0, initial_y)];
+
         let snake = Snake {
             gl: GlGraphics::new(opengl),
             x: initial_x,
@@ -43,6 +43,7 @@ impl Snake {
             direction: Directions::Right,
             sounds,
             score: 0,
+            snake_body,
         };
 
         return snake;
@@ -69,6 +70,16 @@ impl Snake {
             Directions::Up => self.y -= self.velocity,
             Directions::Down => self.y += self.velocity,
         }
+
+        // move each part of the snake body one step forward
+        for i in 0..self.snake_body.len() {
+            match self.direction {
+                Directions::Right => self.snake_body[i].0 += self.velocity,
+                Directions::Left => self.snake_body[i].0 -= self.velocity,
+                Directions::Up => self.snake_body[i].1 -= self.velocity,
+                Directions::Down => self.snake_body[i].1 += self.velocity,
+            }
+        }
     }
 
     fn collide_with_apple(&mut self, apple: &Apple) -> bool {
@@ -83,11 +94,22 @@ impl Snake {
 
     pub fn render(&mut self, render_args: &RenderArgs) -> bool {
         let square_snake = graphics::rectangle::square(self.x, self.y, self.size as f64);
+
         self.gl.draw(render_args.viewport(), |c, gl| {
             let transform = c.transform;
 
             graphics::rectangle(graphics::color::WHITE, square_snake, transform, gl);
         });
+
+        // for (x, y) in &self.snake_body {
+        //     let square_body = graphics::rectangle::square(*x, *y, self.size as f64);
+
+        //     self.gl.draw(render_args.viewport(), |c, gl| {
+        //         let transform = c.transform;
+
+        //         graphics::rectangle(graphics::color::BLUE, square_body, transform, gl);
+        //     });
+        // }
 
         let collided_with_the_wall = self.verify_collision_with_wall(render_args);
 
@@ -100,10 +122,14 @@ impl Snake {
         }
     }
 
-    pub fn update(&mut self, _update_args: &UpdateArgs, apple: &mut Apple, window_dimensions: (f64, f64)) {
+    pub fn update(
+        &mut self,
+        _update_args: &UpdateArgs,
+        apple: &mut Apple,
+        window_dimensions: (f64, f64),
+    ) {
         self.change_direction();
         if self.collide_with_apple(apple) {
-
             self.sounds.play("bite");
             self.velocity += 0.1;
             self.score += 1;
