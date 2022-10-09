@@ -1,9 +1,8 @@
 [package]
-
 name = "snake_game"
 version = "0.1.0"
 authors = [
-    "Andre Castelo <andrecasteloecomp@gmail.com>"
+    "André Castelo <andre.castelo@fleye.com.br>"
 ]
 
 [[bin]]

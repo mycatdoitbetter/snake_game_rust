@@ -4,6 +4,9 @@ extern crate nanorand;
 extern crate opengl_graphics;
 extern crate piston;
 extern crate rusty_audio;
+use std::env;
+use std::path::PathBuf;
+
 use rusty_audio::Audio;
 
 use glutin_window::GlutinWindow as Window;
@@ -11,7 +14,7 @@ use opengl_graphics::{GlGraphics, OpenGL};
 use piston::event_loop::{EventSettings, Events};
 use piston::input::{RenderArgs, RenderEvent, UpdateArgs, UpdateEvent};
 use piston::window::WindowSettings;
-use piston::{Button, ButtonEvent, ButtonState};
+use piston::{Button, ButtonEvent, ButtonState, EventLoop};
 
 pub mod apple;
 use apple::Apple;
@@ -26,9 +29,14 @@ struct Game {
     apple: Apple,
 }
 
+
+
+// TODO: Mock general values, like the window size, the snake size, the apple size, etc.
 impl Game {
     fn new(opengl: OpenGL, screen_width: f64, screen_height: f64) -> Game {
         let mut sounds = Audio::new();
+        // TODO: Find a way to load the sounds and future assets 
+        // from a folder using a load_assets method
         sounds.add("bite", "bite.wav");
 
         let snake = Snake::new(opengl, sounds, screen_width / 2.0, screen_height / 2.0);
@@ -57,8 +65,8 @@ impl Game {
         self.snake.update(update_args, &mut self.apple, self.window_dimensions);
     }
 
-    fn pressed(&mut self, button: Button) {
-        self.snake.pressed(button);
+    fn keyboard_pressed(&mut self, button: Button) {
+        self.snake.keyboard_pressed(button);
     }
 }
 
@@ -76,6 +84,8 @@ fn main() {
 
     let mut game = Game::new(opengl, window_width, window_height);
 
+    events.set_ups(8);
+
     while let Some(event) = events.next(&mut window) {
         if let Some(render_args) = event.render_args() {
             if !game.render(&render_args) {
@@ -89,7 +99,7 @@ fn main() {
 
         if let Some(button) = event.button_args() {
             if button.state == ButtonState::Press {
-                game.pressed(button.button);
+                game.keyboard_pressed(button.button);
             }
         }
     }

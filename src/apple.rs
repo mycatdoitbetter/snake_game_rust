@@ -29,18 +29,19 @@ impl Apple {
         return apple;
     }
     pub fn render(&mut self, render_args: &RenderArgs) {
-        let square_apple = graphics::rectangle::square(self.x, self.y, self.size as f64);
+        let square_apple = graphics::rectangle::square(self.x, self.y, self.size);
 
-        self.gl.draw(render_args.viewport(), |c, gl| {
-            let transform = c.transform;
+        self.gl.draw(render_args.viewport(), |context, gl| {
+            let transform = context.transform;
 
             graphics::rectangle(graphics::color::RED, square_apple, transform, gl);
         });
     }
-
     pub fn generate_new_apple(&mut self, window_dimensions: (f64, f64)) {
+        // TODO: Verify if the new apple is not being generated inside the snake or outside the screen
         let mut rand = WyRand::new();
 
+        // TODO: Change the way to access the window dimensions tuple
         let (width, height) = (window_dimensions.0 - self.size, window_dimensions.1 - self.size);
 
         self.x = rand.generate_range(1_u64..=width as u64) as f64;
