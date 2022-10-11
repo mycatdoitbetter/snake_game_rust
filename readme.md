@@ -4,11 +4,11 @@
 
 A simple snake game built with Rust and [Piston](https://www.piston.rs/).
 
-The objective of the project is practice Rust, so the code are in current development. Feel free to contribute and sharing your knowledge to we improve this code tdeogether and built something cool!
+The objective of the project is practice Rust, so the code are in current development. Feel free to contribute and sharing your knowledge to we improve this code together and built something cool!
 <hr/>
 <br/>
 
-<img src="./docs/assets/demo.gif" width="400">
+<img src="./docs/assets/demo.gif" width="450">
 
 </div>
 
