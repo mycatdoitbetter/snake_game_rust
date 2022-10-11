@@ -8,7 +8,7 @@ The objective of the project is practice Rust, so the code are in current develo
 <hr/>
 <br/>
 
-![demo](./docs/assets/demo.gif)
+<img src="./docs/assets/demo.gif" width="400">
 
 </div>
 
