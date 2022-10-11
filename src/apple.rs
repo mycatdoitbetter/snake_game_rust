@@ -4,6 +4,10 @@ extern crate nanorand;
 extern crate opengl_graphics;
 extern crate piston;
 
+use graphics::{
+    clear,
+    color::{self},
+};
 use nanorand::{Rng, WyRand};
 use opengl_graphics::{GlGraphics, OpenGL};
 use piston::input::RenderArgs;
@@ -33,15 +37,16 @@ impl Apple {
 
         self.gl.draw(render_args.viewport(), |context, gl| {
             let transform = context.transform;
+            clear(color::BLACK, gl);
 
-            graphics::rectangle(graphics::color::RED, square_apple, transform, gl);
+            graphics::rectangle(color::RED, square_apple, transform, gl);
         });
     }
+
+    // TODO: Prevent apple from spawning on the snake
     pub fn generate_new_apple(&mut self, window_dimensions: (f64, f64)) {
-        // TODO: Verify if the new apple is not being generated inside the snake or outside the screen
         let mut rand = WyRand::new();
 
-        // TODO: Change the way to access the window dimensions tuple
         let (width, height) = (window_dimensions.0 - self.size, window_dimensions.1 - self.size);
 
         self.x = rand.generate_range(1_u64..=width as u64) as f64;
